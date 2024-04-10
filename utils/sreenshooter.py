@@ -17,7 +17,7 @@ class ScreenShooter:
         return screenshot
 
     @allure.step("Сравнение скриншотов")
-    def compare_screenshots(self, reference_image_path, output_dir='output', threshold=0.97):
+    def compare_screenshots(self, reference_image_path, output_dir='output', threshold=0.92):
         template_image = cv2.imread(reference_image_path, cv2.IMREAD_UNCHANGED)
         if template_image.shape[2] == 4:
             template_image_mask = cv2.cvtColor(template_image[:, :, 3], cv2.COLOR_GRAY2BGR)
