@@ -54,5 +54,5 @@ class LoginPage(BasePage):
         self.wait_and_click(*LoginPageLocators.LOGOUT_BUTTON)
 
     @allure.step("Открытие дропдауна аккаунта")
-    def account_dropdown(self):
+    def open_account_dropdown(self):
         self.wait_and_click(*LoginPageLocators.ACCOUNT_BUTTON_DROPDOWN)

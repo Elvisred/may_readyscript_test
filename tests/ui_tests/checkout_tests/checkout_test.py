@@ -22,6 +22,7 @@ class TestCheckout(BaseTest):
     @allure.title("Проверка добавления товаров в корзину и их удаление")
     def test_add_and_remove_products_from_cart(self, browser):
         self.loginpage.login_user()
+
         self.catalogpage.select_main_catalog_category(CatalogPage.MainCatalogCategory.LAPTOPS)
         self.catalogpage.add_to_cart_by_order_number(1)
         self.catalogpage.back_to_catalog()
@@ -32,6 +33,7 @@ class TestCheckout(BaseTest):
         self.catalogpage.open_product_page_by_order_number(4)
         self.catalogpage.add_to_cart_from_product_page()
         self.catalogpage.proceed_to_checkout_from_product_page()
+
         self.screenshooter.compare_screenshots('./screenshots/checkout/checkout_with_selected_items.png')
         self.checkoutpage.delete_first_item()
         self.screenshooter.compare_screenshots('./screenshots/checkout/first_item_deleted.png')

@@ -22,7 +22,8 @@ class TestLogin(BaseTest):
     @allure.title("Проверка успешного логина")
     def test_correct_login(self, browser):
         self.loginpage.login_user()
-        self.loginpage.account_dropdown()
+
+        self.loginpage.open_account_dropdown()
 
         self.screenshooter.compare_screenshots('./screenshots/login/account_dropdown.png')
         with allure.step("Скриншоты сверены корректно"):
