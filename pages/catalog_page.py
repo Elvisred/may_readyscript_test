@@ -12,9 +12,9 @@ class CatalogPageLocators(object):
     # xpath "Вернуться к покупкам" из окна добавления товара в корзину
     BACK_TO_CATALOG_BUTTON = (By.XPATH, "//a[@aria-label='Close']")
     # xpath кнопки "В корзину" в карточке товара
-    ADD_TO_CART_BUTTON = (By.XPATH, "(//button[contains(@class, 'rs-buy')])[1]")
+    ADD_TO_CART_ON_PRODUCT_PAGE_BUTTON = (By.XPATH, "(//button[contains(@class, 'rs-buy')])[1]")
     # xpath кнопки "Перейти в корзину" в карточке товара
-    PROCEED_TO_CHECKOUT_BUTTON = (By.XPATH, "//a[@href='/cart/']")
+    PROCEED_TO_CHECKOUT_FROM_PRODUCT_PAGE_BUTTON = (By.XPATH, "//a[@href='/cart/']")
 
 
 class CatalogPage(BasePage):
@@ -96,16 +96,16 @@ class CatalogPage(BasePage):
 
     @allure.step("Возврат к покупкам из окна выбранных товаров")
     def back_to_catalog(self):
-        self.wait_and_click(By.XPATH, CatalogPageLocators.BACK_TO_CATALOG_BUTTON)
+        self.wait_and_click(*CatalogPageLocators.BACK_TO_CATALOG_BUTTON)
 
     @allure.step("Переход в карточку товара по порядковому номеру - {number}")
     def open_product_page_by_order_number(self, number):
-        self.wait_and_click(By.XPATH, f"(//img[@class='rs-image'][{number}]")
+        self.wait_and_click(By.XPATH, f"(//img[@class='rs-image'])[{number}]")
 
     @allure.step("Добавление товара в корзину из карточки товара")
     def add_to_cart_from_product_page(self):
-        self.wait_and_click(By.XPATH, CatalogPageLocators.ADD_TO_CART_BUTTON)
+        self.wait_and_click(*CatalogPageLocators.ADD_TO_CART_ON_PRODUCT_PAGE_BUTTON)
 
     @allure.step("Переход в корзину из окна выбранных товаров")
     def proceed_to_checkout_from_product_page(self):
-        self.wait_and_click(By.XPATH, CatalogPageLocators.ADD_TO_CART_BUTTON)
+        self.wait_and_click(*CatalogPageLocators.PROCEED_TO_CHECKOUT_FROM_PRODUCT_PAGE_BUTTON)

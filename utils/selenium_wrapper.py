@@ -6,7 +6,8 @@ from selenium.webdriver import ActionChains
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.support.ui import WebDriverWait
-from selenium.common.exceptions import TimeoutException, StaleElementReferenceException
+from selenium.common.exceptions import TimeoutException, StaleElementReferenceException, \
+    ElementClickInterceptedException
 from selenium.webdriver.support import expected_conditions as EC
 
 
@@ -22,25 +23,27 @@ class SeleniumWrapper:
     STEP = 0.3
 
     @allure.step("Нажимаем на элемент {what}")
-    def wait_and_click(self, how, what, timeout=TIME_OUT, step=STEP):
-        try:
-            element = WebDriverWait(self.browser, timeout, step).until(EC.visibility_of_element_located((how, what)))
-            element.click()
-        except StaleElementReferenceException:
-            element = WebDriverWait(self.browser, timeout, step).until(EC.visibility_of_element_located((how, what)))
-            element.click()
-
-    def wait_for_visibility(self, how, what, timeout=TIME_OUT, step=STEP):
-        WebDriverWait(self.browser, timeout, step).until(EC.visibility_of_element_located((how, what)))
-
-    @allure.step("Ожидаем что элемент {what} отображен на странице")
-    def is_visible(self, how, what, timeout=5, step=STEP):
-        try:
-            WebDriverWait(self.browser, timeout, step).until(EC.visibility_of_element_located((how, what)))
-        except TimeoutException:
-            return False
-
-        return True
+    def wait_and_click(self, how, what, timeout=TIME_OUT, step=STEP, attempts=3):
+        attempt = 0
+        while attempt < attempts:
+            try:
+                with allure.step(f"Попытка нажать на элемент {what}, попытка {attempt + 1}"):
+                    element = WebDriverWait(self.browser, timeout, step).until(
+                        EC.visibility_of_element_located((how, what)))
+                    element.click()
+                    time.sleep(1)
+                    return
+            except (ElementClickInterceptedException, StaleElementReferenceException) as e:
+                error_type = "Не удалось нажать на элемент" if isinstance(e,
+                                                                          ElementClickInterceptedException) \
+                    else "Устаревшая ссылка на элемент"
+                with allure.step(f"{error_type} {what}, ошибка: {e}. Повтор через 2 секунды"):
+                    allure.attach(str(e), name=f"Ошибка при попытке {attempt + 1}",
+                                  attachment_type=allure.attachment_type.TEXT)
+                    time.sleep(2)
+                    attempt += 1
+        with allure.step(f"Элемент {what} не был кликабелен после {attempts} попыток"):
+            raise ElementClickInterceptedException(f"Элемент {what} не был кликабелен после {attempts} попыток.")
 
     @allure.step("Ожидаем что элемент {what} присутствует на странице")
     def wait_for_presence(self, how, what, timeout=TIME_OUT, step=STEP):
@@ -56,22 +59,6 @@ class SeleniumWrapper:
         except TimeoutException:
             return False
         return True
-
-    @allure.step("Скролл к элементу {what}")
-    def scroll_to_element(self, how, what):
-        self.wait_for_visibility(how, what)
-        element = self.browser.find_element(how, what)
-        self.browser.execute_script("arguments[0].scrollIntoView();", element)
-        time.sleep(3)
-
-    @allure.step("Ожидаем что элемент отсутствует на странице")
-    def is_not_element_present(self, how, what, timeout=5):
-        try:
-            WebDriverWait(self.browser, timeout).until(EC.presence_of_element_located((how, what)))
-        except TimeoutException:
-            return True
-
-        return False
 
     @allure.step("Открываем страницу {url}")
     def open(self, url):
@@ -90,9 +77,6 @@ class SeleniumWrapper:
 
         if value:
             self.browser.find_element(how, what).send_keys(value)
-
-    def wait_for_invisibility(self, how, what, timeout=TIME_OUT, step=STEP):
-        WebDriverWait(self.browser, timeout, step).until_not(EC.visibility_of_element_located((how, what)))
 
     @allure.step("Переводим курсор мыши на элемент {what}")
     def hover_to_element(self, how, what, timeout=TIME_OUT, step=STEP):

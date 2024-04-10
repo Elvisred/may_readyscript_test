@@ -1,3 +1,5 @@
+import time
+
 import allure
 import pytest
 
@@ -19,7 +21,6 @@ class TestLogin(BaseTest):
     def test_correct_login(self, browser):
         self.loginpage.login_user()
 
-        # Assert
         with allure.step("Проверяем наличие элемента указывающего на успешный логин"):
             assert self.loginpage.is_element_present(*LoginPageLocators.ACCOUNT_BUTTON_FIELD)
 
@@ -39,7 +40,6 @@ class TestLogin(BaseTest):
     def test_negative_login(self, browser, case_index, email, password):
         self.loginpage.login_user(email=email, password=password)
 
-        # Assert
         with allure.step("Проверяем сообщение об ошибке"):
             assert self.loginpage.is_element_present(*LoginPageLocators.INCORRECT_LOGIN_ALERT)
 
@@ -49,6 +49,5 @@ class TestLogin(BaseTest):
         self.loginpage.login_user()
         self.loginpage.logout_user()
 
-        # Assert
         with allure.step("Проверяем наличие элемента личного кабинета, что указывает на успешный разлогин"):
             assert self.loginpage.is_element_present(*LoginPageLocators.ACCOUNT_BUTTON)

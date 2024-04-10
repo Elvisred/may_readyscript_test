@@ -28,6 +28,8 @@ class LoginPageLocators(object):
 
 
 class LoginPage(BasePage):
+    def __init__(self, *args, **kwargs):
+        super(LoginPage, self).__init__(*args, **kwargs)
 
     load_dotenv()
     email = os.environ.get("EMAIL")
