@@ -6,6 +6,7 @@ import pytest
 from pages.login_page import LoginPage, LoginPageLocators
 from tests.base_test import BaseTest
 from tests.conftest import random_string
+from utils.sreenshooter import ScreenShooter
 
 
 @allure.epic("Login tests")
@@ -15,14 +16,17 @@ class TestLogin(BaseTest):
         self.loginpage = LoginPage(browser, BaseTest.baseurl)
         self.loginpage.open(BaseTest.baseurl)
         self.loginpage = LoginPage(browser, BaseTest.baseurl)
+        self.screenshooter = ScreenShooter(browser)
 
     @allure.story("Login")
     @allure.title("Проверка успешного логина")
     def test_correct_login(self, browser):
         self.loginpage.login_user()
+        self.loginpage.account_dropdown()
 
-        with allure.step("Проверяем наличие элемента указывающего на успешный логин"):
-            assert self.loginpage.is_element_present(*LoginPageLocators.ACCOUNT_BUTTON_FIELD)
+        self.screenshooter.compare_screenshots('./screenshots/login/account_dropdown.png')
+        with allure.step("Скриншоты сверены корректно"):
+            pass
 
     @allure.story("Negative Login")
     @allure.title("Негативные тесты авторизации")

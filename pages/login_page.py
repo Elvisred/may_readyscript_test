@@ -21,8 +21,8 @@ class LoginPageLocators(object):
     SIGN_IN_BUTTON = (By.XPATH, "//button[text()='Войти']")
     # xpath алерта при попытке логина с неправильными email и password
     INCORRECT_LOGIN_ALERT = (By.XPATH, "//div[@class='invalid-feedback' and text()='Неверный e-mail или пароль']")
-    # xpath области имени и фамилии аккаунта
-    ACCOUNT_BUTTON_FIELD = (By.XPATH, "//a[@class='head-bar__link' and contains(@href, '/my/')]")
+    # xpath дропдауна аккаунта
+    ACCOUNT_BUTTON_DROPDOWN = (By.XPATH, "//a[@class='head-bar__link' and contains(@href, '/my/')]")
     # xpath кнопки Sign in
     LOGOUT_BUTTON = (By.XPATH, "//span[text()='Выход']")
 
@@ -50,5 +50,9 @@ class LoginPage(BasePage):
 
     @allure.step("Logout пользователя")
     def logout_user(self):
-        self.wait_and_click(*LoginPageLocators.ACCOUNT_BUTTON_FIELD)
+        self.wait_and_click(*LoginPageLocators.ACCOUNT_BUTTON_DROPDOWN)
         self.wait_and_click(*LoginPageLocators.LOGOUT_BUTTON)
+
+    @allure.step("Открытие дропдауна аккаунта")
+    def account_dropdown(self):
+        self.wait_and_click(*LoginPageLocators.ACCOUNT_BUTTON_DROPDOWN)
