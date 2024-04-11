@@ -17,7 +17,7 @@ class ScreenShooter:
         return screenshot
 
     @allure.step("Сравнение скриншотов")
-    def compare_screenshots(self, reference_image_path, output_dir='output', threshold=0.92):
+    def compare_screenshots(self, reference_image_path, output_dir='output', threshold=0.98):
         template_image = cv2.imread(reference_image_path, cv2.IMREAD_UNCHANGED)
         if template_image.shape[2] == 4:
             template_image_mask = cv2.cvtColor(template_image[:, :, 3], cv2.COLOR_GRAY2BGR)
@@ -47,6 +47,10 @@ class ScreenShooter:
 
         message = f"Скриншоты совпадают. Сходство: {best_match_value}"
         allure.attach(message, name="Сходство", attachment_type=allure.attachment_type.TEXT)
+
+        top_left = (0, 0)
+        bottom_right = (top_left[0] + template_image.shape[1], top_left[1] + template_image.shape[0])
+        cv2.rectangle(screenshot, top_left, bottom_right, (255, 0, 0), 2)
 
         if not os.path.exists(output_dir):
             os.makedirs(output_dir)
