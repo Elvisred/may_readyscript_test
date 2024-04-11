@@ -48,10 +48,6 @@ class ScreenShooter:
         message = f"Скриншоты совпадают. Сходство: {best_match_value}"
         allure.attach(message, name="Сходство", attachment_type=allure.attachment_type.TEXT)
 
-        top_left = (0, 0)
-        bottom_right = (top_left[0] + template_image.shape[1], top_left[1] + template_image.shape[0])
-        cv2.rectangle(screenshot, top_left, bottom_right, (255, 0, 0), 2)
-
         if not os.path.exists(output_dir):
             os.makedirs(output_dir)
         screenshot_path = os.path.join(output_dir, 'marked_screenshot.png')
