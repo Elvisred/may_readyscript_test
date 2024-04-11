@@ -12,6 +12,7 @@ RUN echo "===> Installing system dependencies..." && \
     xvfb && \
     \
     \
+# настроить динамическую выдачу нужного хромдрайвера
     wget https://storage.googleapis.com/chrome-for-testing-public/123.0.6312.105/linux64/chromedriver-linux64.zip && \
     unzip chromedriver-linux64.zip -d /usr/bin && \
     mv /usr/bin/chromedriver-linux64/chromedriver /usr/bin/chromedriver && \
