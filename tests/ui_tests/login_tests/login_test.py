@@ -52,6 +52,7 @@ class TestLogin(BaseTest):
     @allure.title("Тест разлогина")
     def test_logout(self, browser):
         self.loginpage.login_user()
+
         self.loginpage.logout_user()
 
         with allure.step("Проверяем наличие элемента личного кабинета, что указывает на успешный разлогин"):
