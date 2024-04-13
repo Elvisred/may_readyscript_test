@@ -28,6 +28,5 @@ class TestCatalog(BaseTest):
         self.catalogpage.select_dropdown_tablets_brand(CatalogPage.TabletsCategoryBrands.DIGMA)
 
         self.screenshooter.compare_screenshots('./screenshots/catalog/digma_tablets_catalog_screen.png')
-
         with allure.step("Скриншоты сверены корректно"):
             pass
