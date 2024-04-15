@@ -31,7 +31,7 @@ class SeleniumWrapper:
                     element = WebDriverWait(self.browser, timeout, step).until(
                         EC.visibility_of_element_located((how, what)))
                     element.click()
-                    time.sleep(1)
+                    time.sleep(2)
                     return
             except (ElementClickInterceptedException, StaleElementReferenceException) as e:
                 error_type = "Не удалось нажать на элемент" if isinstance(e,
@@ -88,6 +88,47 @@ class SeleniumWrapper:
     @allure.step("Переводим курсор на элемент {what} и нажимаем на него")
     def hover_and_click(self, how, what, timeout=TIME_OUT, step=STEP):
         WebDriverWait(self.browser, timeout, step).until(EC.visibility_of_element_located((how, what)))
+        time.sleep(2)
         element = self.wait_for_presence(how, what)
         actions = ActionChains(self.browser)
         actions.move_to_element(element).click().perform()
+
+    @allure.step("Ввод текста: {text}")
+    def enter_text(self, text):
+        actions = ActionChains(self.browser)
+        actions.send_keys(text)
+        actions.perform()
+
+    @allure.step("Нажимаем на TAB")
+    def press_tab(self):
+        actions = ActionChains(self.browser)
+        actions.send_keys(Keys.TAB)
+        actions.perform()
+
+    @allure.step("Нажимаем на ENTER")
+    def press_enter(self):
+        actions = ActionChains(self.browser)
+        actions.send_keys(Keys.ENTER)
+        actions.perform()
+
+    @allure.step("Скролл до элемента {what}")
+    def scroll_to_element(self, how, what):
+        try:
+            self.wait_for_visibility(how, what)
+            element = self.browser.find_element(how, what)
+            self.browser.execute_script("arguments[0].scrollIntoView({behavior: 'smooth', block: 'center'});", element)
+            time.sleep(2)
+        except TimeoutException as e:
+            allure.attach(str(e), name="Ошибка скролла", attachment_type=allure.attachment_type.TEXT)
+            raise AssertionError(f"Не удалось проскроллить до элемента {what}: {e}")
+
+    @allure.step("Ожидаем, что элемент {what} будет виден")
+    def wait_for_visibility(self, how, what, timeout=TIME_OUT, step=STEP):
+        try:
+            return WebDriverWait(self.browser, timeout, step).until(EC.visibility_of_element_located((how, what)))
+        except TimeoutException:
+            raise TimeoutException(f"Элемент {what} не стал виден после {timeout} секунд.")
+
+    @allure.step("Прокрутка страницы на {pixels} пикселей")
+    def scroll_by_pixels(self, pixels):
+        self.browser.execute_script(f"window.scrollBy(0, {pixels});")

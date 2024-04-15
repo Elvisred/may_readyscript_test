@@ -15,7 +15,6 @@ class TestLogin(BaseTest):
     def setup(self, browser):
         self.loginpage = LoginPage(browser, BaseTest.baseurl)
         self.loginpage.open(BaseTest.baseurl)
-        self.loginpage = LoginPage(browser, BaseTest.baseurl)
         self.screenshooter = ScreenShooter(browser)
 
     @allure.story("Login")
